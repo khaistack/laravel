@@ -15,11 +15,10 @@ class CreateOrdersTable extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id('id');
-            $table->string('order_der');
-            $table->string('name');
+            // $table->string('order_der');
+            // $table->string('name');
             $table->string('shiping_addres');
             $table->timestamps();
-            $table->foreignId('cart_id')->constrained('carts');
             $table->foreignId('customer_id')->constrained('customer');
         });
     }

@@ -17,10 +17,10 @@ class CreateUsersTable extends Migration
             $table->id('id');
             $table->string('name');
             $table->string('email')->unique()->nullable();
-            $table->string('provider');
-            $table->string('provider_id');
+            $table->string('provider')->nullable();;
+            $table->string('provider_id')->nullable();;
             $table->string('avatar')->nullable();
-            $table->integer('level');
+            $table->string('status')->nullable();
             $table->string('access_token')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();

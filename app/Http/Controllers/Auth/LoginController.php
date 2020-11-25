@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Auth;
-
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Mail\FirstEmail;
 use App\Models\User;
@@ -52,7 +52,22 @@ class LoginController extends Controller
     // {
     //     return 'username';
     // }
+    public function logout(Request $request)
+    {
+        $this->guard()->logout();
 
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+
+        if ($response = $this->loggedOut($request)) {
+            return $response;
+        }
+
+        return $request->wantsJson()
+            ? new JsonResponse([], 204)
+            : redirect('/login');
+    }
     public function showLoginForm()
     {
         return view('auth.login');
@@ -73,7 +88,6 @@ class LoginController extends Controller
 
         try {
             return Socialite::driver($driver)->redirect();
-            dump('â');die;
         } catch (Exception $e) {
             // You should show something simple fail message
             return $this->sendFailedResponse($e->getMessage());
@@ -126,6 +140,7 @@ class LoginController extends Controller
                     'email' => $providerUser->getEmail(),
                     'avatar' => $providerUser->getAvatar(),
                     'provider' => $driver,
+                    'status' => "Hoạt Động",
                     'provider_id' => $providerUser->getId(),
                     'access_token' => $providerUser->token,
                     'password' => bcrypt(random_bytes(20))

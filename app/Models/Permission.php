@@ -9,8 +9,10 @@ class Permission extends Model
 {
     use HasFactory;
 
+    protected $table = 'permission';
+
     protected $fillable = [
-        'name',
-        'guard_name'
+        'action',
+        'role_id',
     ];
 }

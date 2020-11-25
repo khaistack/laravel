@@ -17,6 +17,8 @@ class User extends Authenticatable
      *
      * @var array
      */
+    protected $table = "users";
+    
     protected $fillable = [
         'name',
         'email',
@@ -25,7 +27,10 @@ class User extends Authenticatable
         'provider_id',
         'provider',
         'access_token',
-        'remember_token'
+        'remember_token',
+        'roles_id',
+        'status',
+        'id'
     ];
 
     /**
@@ -46,4 +51,8 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function getRole(){
+        return $this->hasOne('App\Models\Roles','id','roles_id');
+    } 
 }

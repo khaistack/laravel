@@ -14,15 +14,15 @@ class AddNewColumToUsers extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('City');
-            $table->string('Zip');
-            $table->string('State');
-            $table->string('Address 2');
-            $table->string('About Me');
-            $table->string('Skills');
-            $table->string('Language');
-            $table->string('Age');
-            $table->string('Availability');
+            $table->string('City')->nullable();
+            $table->string('Zip')->nullable();
+            $table->string('State')->nullable();
+            $table->string('Address')->nullable();
+            $table->string('About Me')->nullable();
+            $table->string('Skills')->nullable();
+            $table->string('Language')->nullable();
+            $table->string('Age')->nullable();
+            $table->string('Availability')->nullable();
         });
     }
 

@@ -185,7 +185,8 @@
                                         <span class="ml-2">Inbox </span>
                                     </a>
                                     <a href="{{ route('logout') }}" onclick="event.preventDefault();
-                                        document.getElementById('logout-form').submit()" class="dropdown-item ai-icon">
+                                                    document.getElementById('logout-form').submit()"
+                                        class="dropdown-item ai-icon">
                                         <svg id="icon-logout" xmlns="http://www.w3.org/2000/svg" class="text-danger"
                                             width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -228,7 +229,7 @@
                         </ul> --}}
                     </li>
                     <li>
-                        <a href="{{ route('users.index') }}" class="has-arrow ai-icon" href="javascript:void()"
+                        <a href="{{ route('user-current') }}" class="has-arrow ai-icon" href="javascript:void()"
                             aria-expanded="false">
                             <i class="flaticon-381-television"></i>
                             <span class="nav-text">Tài Khoản</span>
@@ -240,9 +241,9 @@
                             <span class="nav-text">Phân Quyền</span>
                         </a>
                         <ul aria-expanded="false">
-                            <li><a href='{{ route('roles.index') }}'>Nhóm Quyền</a></li>
-                            <li><a href={{ route('roles.create') }}>Tạo Nhóm Quyền</a></li>
-                            <li><a href="#">Danh Sách Tài Khoản</a></li>
+                            <li><a href="{{ route('list') }}">Nhóm Quyền</a></li>
+                            <li><a href='{{ route('create') }}'>Tạo Nhóm Quyền</a></li>
+                            <li><a href="{{ route('list-users') }}">Danh Sách Tài Khoản</a></li>
                         </ul>
                     </li>
                     <li>
@@ -253,94 +254,10 @@
                         <ul aria-expanded="false">
                             <li> <a href="{{ route('product') }}">Danh Sách Sản Phẩm</a></li>
                             <li><a href="{{ route('create-product') }}">Đăng Sản Phẩm</a></li>
-                        </ul>
-                    </li>
-                    {{-- <li><a class="has-arrow ai-icon" href="javascript:void()"
-                            aria-expanded="false">
-                            <i class="flaticon-381-internet"></i>
-                            <span class="nav-text">Bootstrap</span>
-                        </a>
-                        <ul aria-expanded="false">
-                            <li><a href="./ui-accordion.html">Accordion</a></li>
-                            <li><a href="./ui-alert.html">Alert</a></li>
-                            <li><a href="./ui-badge.html">Badge</a></li>
-                            <li><a href="./ui-button.html">Button</a></li>
-                            <li><a href="./ui-modal.html">Modal</a></li>
-                            <li><a href="./ui-button-group.html">Button Group</a></li>
-                            <li><a href="./ui-list-group.html">List Group</a></li>
-                            <li><a href="./ui-media-object.html">Media Object</a></li>
-                            <li><a href="./ui-card.html">Cards</a></li>
-                            <li><a href="./ui-carousel.html">Carousel</a></li>
-                            <li><a href="./ui-dropdown.html">Dropdown</a></li>
-                            <li><a href="./ui-popover.html">Popover</a></li>
-                            <li><a href="./ui-progressbar.html">Progressbar</a></li>
-                            <li><a href="./ui-tab.html">Tab</a></li>
-                            <li><a href="./ui-typography.html">Typography</a></li>
-                            <li><a href="./ui-pagination.html">Pagination</a></li>
-                            <li><a href="./ui-grid.html">Grid</a></li>
-
-                        </ul>
-                    </li>
-                    <li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
-                            <i class="flaticon-381-heart"></i>
-                            <span class="nav-text">Plugins</span>
-                        </a>
-                        <ul aria-expanded="false">
-                            <li><a href="./uc-select2.html">Select 2</a></li>
-                            <li><a href="./uc-nestable.html">Nestedable</a></li>
-                            <li><a href="./uc-noui-slider.html">Noui Slider</a></li>
-                            <li><a href="./uc-sweetalert.html">Sweet Alert</a></li>
-                            <li><a href="./uc-toastr.html">Toastr</a></li>
-                            <li><a href="./map-jqvmap.html">Jqv Map</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="widget-basic.html" class="ai-icon" aria-expanded="false">
-                            <i class="flaticon-381-settings-2"></i>
-                            <span class="nav-text">Widget</span>
-                        </a>
-                    </li> --}}
-                    <li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
-                            <i class="flaticon-381-notepad"></i>
-                            <span class="nav-text">Forms</span>
-                        </a>
-                        <ul aria-expanded="false">
-                            <li><a href="./form-element.html">Form Elements</a></li>
-                            <li><a href="./form-wizard.html">Wizard</a></li>
-                            <li><a href="./form-editor-summernote.html">Summernote</a></li>
-                            <li><a href="form-pickers.html">Pickers</a></li>
-                            <li><a href="form-validation-jquery.html">Jquery Validate</a></li>
-                        </ul>
-                    </li>
-                    <li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="false">
-                            <i class="flaticon-381-layer-1"></i>
-                            <span class="nav-text">Pages</span>
-                        </a>
-                        <ul aria-expanded="false">
-                            <li><a href="./page-register.html">Register</a></li>
-                            <li><a href="./page-login.html">Login</a></li>
-                            <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Error</a>
-                                <ul aria-expanded="false">
-                                    <li><a href="./page-error-400.html">Error 400</a></li>
-                                    <li><a href="./page-error-403.html">Error 403</a></li>
-                                    <li><a href="./page-error-404.html">Error 404</a></li>
-                                    <li><a href="./page-error-500.html">Error 500</a></li>
-                                    <li><a href="./page-error-503.html">Error 503</a></li>
-                                </ul>
-                            </li>
-                            <li><a href="./page-lock-screen.html">Lock Screen</a></li>
+                            <li><a href="{{ route('showListOrders') }}">Danh Sách Oders</a></li>
                         </ul>
                     </li>
                 </ul>
-
-                <div class="add-menu-sidebar">
-                    <img src="images/icon1.png" alt="" />
-                    <p>Organize your menus through button bellow</p>
-                    <a href="javascript:void(0);" class="btn btn-primary btn-block light">+ Add Menus</a>
-                </div>
-                <div class="copyright">
-                    <p><strong>Davur - Restaurant Admin Dashboard</strong> © 2020 All Rights Reserved</p>
-                    <p>Made with <i class="fa fa-heart"></i> by DexignZone</p>
-                </div>
             </div>
         </div>
     </div>

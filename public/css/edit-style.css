@@ -10,3 +10,29 @@
 .edit-fild {
     max-width: 200px;
 }
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.edit-a {
+    margin-left: 25%;
+}
+
+.edit-strong {
+    color: red;
+    padding-right: 6%;
+}
+
+.edi {
+    margin-right: 5% !important;
+    float: right;
+}
+
+.per {
+    background-color: #e6e6e6;
+    border-radius: 10px;
+    padding: 8
+}

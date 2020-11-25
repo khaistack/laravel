@@ -15,17 +15,20 @@
                                     <div id="profile-settings pt-3 ">
                                         <div class="pt-3">
                                             <div class="settings-form">
-                                            <form action="{{route('edit-port-product',$data->id)}}" enctype="multipart/form-data" method="post">
+                                                <form action="{{ route('edit-post-product', $data->id) }}"
+                                                    enctype="multipart/form-data" method="post">
                                                     @csrf
                                                     <div class="form-row">
                                                         <div class="form-group col-md-6">
                                                             <label>Tên Sản Phẩm</label>
-                                                        <input name="name" value="{{$data->name}}" type="text" class="form-control">
+                                                            <input name="name" value="{{ $data->name }}" type="text"
+                                                                class="form-control">
                                                             <span class="text-red"> {{ $errors->first('name') }}</span>
                                                         </div>
                                                         <div class="form-group col-md-6">
                                                             <label>Mô Tả Sản Phẩm</label>
-                                                            <input name="describe" type="text" value="{{$data->describe}}" class="form-control">
+                                                            <input name="describe" type="text" value="{{ $data->describe }}"
+                                                                class="form-control">
                                                             <span class="text-red"> {{ $errors->first('describe') }}</span>
                                                         </div>
                                                     </div>
@@ -33,27 +36,32 @@
                                                         <label>Upload ảnh</label>
                                                         <div class="input-group">
                                                             <div class="">
-                                                                <input type="file" name="fileToUpload" id="fileToUpload">
+                                                                <input type="file" name="fileToUpload"
+                                                                    value="{{ $data->image }}" id="fileToUpload">
                                                             </div>
                                                             <span class="text-red">
                                                                 {{ $errors->first('fileToUpload') }}</span>
                                                         </div>
                                                     </div>
                                                     <div class="form-row">
-                                                        <div class="form-group  p-0 col-md-4">
+                                                        {{-- <div
+                                                            class="form-group  p-0 col-md-4">
                                                             <label>Số Lượng</label>
-                                                            <input type="number" name="quantity"  value="{{$data->quantity}}" class="form-control">
+                                                            <input type="number" name="quantity"
+                                                                value="{{ $data->quantity }}" class="form-control">
                                                             <span class="text-red"> {{ $errors->first('quantity') }}</span>
-                                                        </div>
+                                                        </div> --}}
                                                         <div class="form-group col-md-4">
                                                             <label>Giá</label>
-                                                            <input type="text" value="{{$data->price}}"  name="price" class="form-control">
+                                                            <input type="text" value="{{ $data->price }}" name="price"
+                                                                class="form-control">
                                                             <span class="text-red"> {{ $errors->first('price') }}</span>
                                                         </div>
 
                                                         <div class="form-group col-md-4">
                                                             <label>Mã Hàng</label>
-                                                            <input type="text" name="code" value="{{$data->code}}"  class="form-control">
+                                                            <input type="text" name="code" value="{{ $data->code }}"
+                                                                class="form-control">
                                                             <span class="text-red"> {{ $errors->first('code') }}</span>
                                                         </div>
                                                     </div>

@@ -8,6 +8,9 @@
                     <div class="card">
                         <div class="card-header">
                             <h4 class="card-title">Danh Sách Sản Phẩm</h4>
+                            @if ($message = Session::get('err'))
+                                <strong class="edit-strong">{{ $message }}</strong>
+                            @endif
                         </div>
                         <div class="col-lg-12 row mt-2">
                             <div class="col-lg-6">
@@ -17,8 +20,8 @@
                             <div class="col-lg-6">
                                 <meta name="csrf-token" content="{{ csrf_token() }}">
                                 <input class="form-control float-right max-width: 150px" onkeyup="check(this)" key='keyword'
-                                    name="search" id="keyword" aria-label="Search" type="search" placeholder="Nhập để tìm kiếm"
-                                    aria-label="Search">
+                                    name="search" id="keyword" aria-label="Search" type="search"
+                                    placeholder="Nhập để tìm kiếm" aria-label="Search">
                             </div>
                         </div>
                         <div class="card-body">
@@ -28,11 +31,12 @@
                                         <tr>
                                             <th><strong>Stt.</strong></th>
                                             <th><strong>Tên</strong></th>
-                                            <th><strong>Mã SP</strong></th>
                                             <th><strong>Ảnh</strong></th>
+                                            <th><strong>Mã SP</strong></th>
                                             <th><strong>Mô Tả</strong></th>
                                             <th><strong>Giá</strong></th>
-                                            <th><strong>Số Lượng</strong></th>
+                                            {{-- <th><strong>Số Lượng</strong></th>
+                                            --}}
                                             <th><strong>Chỉnh Sửa</strong></th>
                                         </tr>
                                     </thead>
@@ -41,14 +45,16 @@
                                             <tr class="text-center">
                                                 <td class="id text-center"><strong>{{ $item->id }}</strong></td>
                                                 <td class="text-center"> {{ $item->name }} </td>
-                                                <td class="text-center"> {{ $item->code }} </td>
                                                 <td class="td-edit text-center"> <img class="im-edit"
-                                                        src="{{ $item->image }}" alt=""></td>
+                                                        src="{{ $item->image }}" alt="">
+                                                </td>
+                                                <td class="text-center"> {{ $item->code }} </td>
                                                 <td class="text-justify edit-fild">
                                                     <p>{{ $item->describe }}</p>
                                                 </td>
                                                 <td class="text-center">{{ $item->price }} đ</td>
-                                                <td class="text-center">{{ $item->quantity }}</td>
+                                                {{-- <td class="text-center">
+                                                    {{ $item->quantity }}</td> --}}
                                                 <td>
                                                     <div class="d-center">
 
@@ -111,10 +117,12 @@
                     '_token': token
                 },
                 success: function(data) {
-                    if (data) {
+                    console.log(data.err);
+                    if (data.sus) {
                         $(i).parent().parent().parent().remove();
                         toastr.success(data, 'Xoá Thành Công');
                     }
+                    // toastr.success(data, 'Bạn không có quyền xoá');
                 }
             });
         }
@@ -126,6 +134,7 @@
             transformResult: function(response) {
                 return {
                     suggestions: $.map($.parseJSON(response), function(item) {
+                        // console.log(item);
                         return {
                             data: item,
                             value: item.name,

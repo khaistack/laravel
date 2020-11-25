@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\formValidation;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
+// use App\Http\Requests\formValidation;
 
+use App\Http\Requests\createRole;
+use App\Models\Permission;
+use App\Models\Roles;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class RoleController extends Controller
@@ -21,9 +23,8 @@ class RoleController extends Controller
      */
     public function index()
     {
-        // $all_roles_in_database = Role::all()->pluck('name');
-        $all_users_with_all_direct_permissions = Role::with('permissions')->get();
-        return view("admin.role.role-list",['aaa'=>$all_users_with_all_direct_permissions]);
+        $Role = Roles::get();
+        return view("admin.role.role-list", ['data' => $Role]);
     }
 
     /**
@@ -33,9 +34,7 @@ class RoleController extends Controller
      */
     public function create()
     {
-        $isPermission = $this->isPermission();
-        // dump($isPermission);die;
-        return view('admin.role.create-role', ['isPermission' => $isPermission]);
+        return view('admin.role.create-role');
     }
 
     /**
@@ -44,25 +43,24 @@ class RoleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(formValidation $request)
+    public function store(createRole $request)
     {
-        $permission = $request->ary;
-        $nameRole =  $request->input('role');
-        // dump(  $nameRole);die;
-
-        $role = $this->isCreateRole($nameRole);
-        $role->givePermissionTo($permission);
-        return redirect()->route('roles.index');
-    }
-
-    public function isCreateRole($nameRole)
-    {
-        return $role = Role::create(['name' => $nameRole]);
-    }
-
-    public function isPermission()
-    {
-        return $isPermission = Permission::all();
+        $param = $this->paramAdd;
+        $userCurrent = $this->getStatusUserCurrent();
+        $check = $this->checkRoleUser($param);
+        if ($check == true && $userCurrent) {
+            $aryPermission = $request->ary;
+            $Role =  $request->input('role');
+            $idRole = Roles::insertGetId(['name' => $Role]);
+            foreach ($aryPermission as $value) {
+                $permission = Permission::create([
+                    'role_id' => $idRole,
+                    'action' => $value,
+                ]);
+            }
+            return redirect()->route('list');
+        }
+        return back()->with('err', 'Bạn không có quyền.');
     }
 
     /**
@@ -71,9 +69,11 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function showListUser()
     {
-        //
+        $data = User::all();
+        $role = Roles::get();
+        return view('admin.acount.list-acount', ['data' => $data, 'role' => $role]);
     }
 
     /**
@@ -84,7 +84,26 @@ class RoleController extends Controller
      */
     public function edit($id)
     {
-        //
+        $param = $this->paramAdd;
+        $userCurrent = $this->getStatusUserCurrent();
+        $check = $this->checkRoleUser($param);
+        if ($check == true && $userCurrent) {
+            $roleCurrent = Roles::find($id);
+            foreach ($roleCurrent->getPermission as $value) {
+                $dataPermissionUser[]  = $value;
+            }
+            foreach ($dataPermissionUser as $per) {
+                $permissionCurrent[] =  $per->action;
+            }
+            return view(
+                'admin.role.edit-role',
+                [
+                    'permission' => $permissionCurrent,
+                    'data' => $dataPermissionUser,
+                    'roleCurrent' => $roleCurrent
+                ]
+            );
+        }
     }
 
     /**
@@ -94,9 +113,17 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
     public function update(Request $request, $id)
     {
-        //
+        dump($id);die;
+        $permissionOfUser = $this->isRoleId($id);
+
+        // foreach ($request->ary as $key => $value) {
+        //     $permissionOfUser->action = $value;
+        // }
+        $permissionOfUser->save($request->ary);
+        return redirect()->route('list');
     }
 
     /**
@@ -105,8 +132,17 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy()
     {
-        //
+        $id = \request('id', 0);
+        Permission::where('role_id', $id)->delete();
+        $user = User::where('roles_id', $id)->first();
+        if ($user !== null) {
+            $user->update(['roles_id' => null]);
+        }
+        Roles::find($id)->delete();
+        return response()->json([
+            'success' => 'Record deleted successfully!'
+        ]);
     }
 }

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\ProductExport;
-use App\Http\Requests\formValidation;
+use App\Http\Requests\FormValidation;
 use App\Imports\ProductsImport;
 use App\Models\Categorys;
 use App\Models\Products;
@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use App;
-
+use App\Models\MapOrders;
 
 class ProductController extends Controller
 {
@@ -54,19 +54,25 @@ class ProductController extends Controller
             'name' => ['required'],
             'describe' => ['required'],
             'price' => ['required'],
-            'quantity' => ['required'],
+            // 'quantity' => ['required'],
             'code' => ['required'],
             'fileToUpload' => ['required'],
             'ary' => ['required'],
         ]);
     }
 
-    public function store(formValidation $request)
+    public function store(FormValidation $request)
     {
-        $idCategory = $this->isGetIdCategory($request->only('ary'));
-        $image = $this->isHandImage($request->fileToUpload);
-        $this->isCreatedProduct($request->all(), $image,  $idCategory);
-        return redirect()->route('product');
+        $param = $this->paramDelete;
+        $userCurrent = $this->getStatusUserCurrent();
+        $check = $this->checkRoleUser($param);
+        if ($check == true && $userCurrent) {
+            $idCategory = $this->isGetIdCategory($request->only('ary'));
+            $image = $this->isHandImage($request->fileToUpload);
+            $this->isCreatedProduct($request->all(), $image,  $idCategory);
+            return redirect()->route('product');
+        }
+        return back()->with('err', 'Bạn không có quyền.');
     }
 
     public function isCreatedProduct($dataRequest, $image, $idCategory)
@@ -76,7 +82,6 @@ class ProductController extends Controller
             'describe' => $dataRequest['describe'],
             'price' => $dataRequest['price'],
             'image' => $image[1],
-            'quantity' => $dataRequest['quantity'],
             'code' => $dataRequest['code'],
             'category_id' => $idCategory['id'],
         ]);
@@ -90,18 +95,18 @@ class ProductController extends Controller
             ]);
         };
         return $id;
-    }   
-
-    public function isHandImage($isFileImage)
-    {
-        if ($isFileImage) {
-            $imageName = time()  . '_' . rand(5, 2222) . '_' . $isFileImage->getClientOriginalExtension();
-            $image =  $isFileImage->move(public_path('images'), $imageName);
-            $path = $image->getRealPath();
-            $exp = explode('public', $path);
-        }
-        return $exp;
     }
+
+    // public function isHandImage($isFileImage)
+    // {
+    //     if ($isFileImage) {
+    //         $imageName = time()  . '_' . rand(5, 2222) . '_' . $isFileImage->getClientOriginalExtension();
+    //         $image =  $isFileImage->move(public_path('images'), $imageName);
+    //         $path = $image->getRealPath();
+    //         $exp = explode('public', $path);
+    //         return $exp;
+    //     }
+    // }
 
     public function export()
     {
@@ -120,13 +125,14 @@ class ProductController extends Controller
     public function searchProduct(Request $request)
     {
         $search = \request('keyword', '');
+        // dump( $search);
         return ($search == '') ? $this->getResultNull() :  $this->getResult($search);
     }
 
     public function getResult($search)
     {
         $employees = Products::orderby('name', 'asc')
-            ->select('id', 'describe', 'image', 'price', 'code', 'quantity', 'name')
+            ->select('id', 'describe', 'image', 'price', 'code', 'name')
             ->where('name', 'like', '%' . $search . '%')->limit(10)->get();
 
         $response = array();
@@ -138,7 +144,7 @@ class ProductController extends Controller
                 "image" => $employee->image,
                 "price" => $employee->price,
                 "code" => $employee->code,
-                "quantity" => $employee->quantity,
+                // "quantity" => $employee->quantity,
                 'describe' => $employee->describe
             );
         }
@@ -171,8 +177,14 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        $dataCurrent = Products::find($id);
-        return view('admin.products.edit-product', ['data' => $dataCurrent]);
+        $param = $this->paramEdit;
+        $userCurrent = $this->getStatusUserCurrent();
+        $check = $this->checkRoleUser($param);
+        if ($check == true && $userCurrent) {
+            $dataCurrent = Products::find($id);
+            return view('admin.products.edit-product', ['data' => $dataCurrent]);
+        }
+        return back()->with('err', 'Bạn không có quyền.');
     }
 
     /**
@@ -181,18 +193,20 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Request $request,$id)
+    public function edit(Request $request, $id)
     {
         $data = Products::find($id);
-        // dump($request->fileToUpload);die;
-        $image =  $this->isHandImage($request->fileToUpload);
-        // dump($image);die;
+        $imageNew = $this->isHandImage($request->fileToUpload);
+        if ($imageNew == null) {
+            $image = $data->image;
+            $data->image = $image;
+        } else {
+            $data->image = $imageNew[1];
+        }
         $data->name = $request->name;
         $data->describe = $request->describe;
-        $data->image = $image[1];
         $data->price = $request->price;
         $data->code = $request->code;
-        $data->quantity = $request->quantity;
         $data->save();
         // toastr.success( 'Xoá Thành Công');
         return redirect()->route('product');
@@ -217,11 +231,20 @@ class ProductController extends Controller
      */
     public function destroy()
     {
-        $id = \request('id', 0);
-        Products::findOrFail($id)->delete();
-
-        return response()->json([
-            'success' => 'Record deleted successfully!'
-        ]);
+        $param = $this->paramDelete;
+        $userCurrent = $this->getStatusUserCurrent();
+        $check = $this->checkRoleUser($param);
+        if ($check == true && $userCurrent) {
+            $id = \request('id', 0);
+            MapOrders::where('produc_id', $id)->delete();
+            Products::find($id)->delete();
+            return response()->json([
+                'sus' => 'xoá thành công!'
+            ]);
+        } else {
+            return response()->json([
+                'err' => 'Bạn không có quyền xoá!'
+            ]);
+        }
     }
 }

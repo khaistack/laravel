@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use GuzzleHttp\Psr7\Message;
 use Illuminate\Foundation\Http\FormRequest;
 
-class formValidation extends FormRequest
+class FormValidation extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -30,7 +30,7 @@ class formValidation extends FormRequest
             // 'role' => 'required',
             'describe' => 'required',
             'name' => 'required',
-            'quantity' => 'required',
+            // 'quantity' => 'required',
             'price' => 'required',
             'code' => 'required',
             'ary' => 'required',
@@ -43,7 +43,7 @@ class formValidation extends FormRequest
             'fileToUpload.required' => 'Phải chọn ảnh',
             // 'role.required' => 'Không được bỏ trống !',
             'describe.required' => 'Không được bỏ trống !',
-            'quantity.required' => 'Không được bỏ trống !',
+            // 'quantity.required' => 'Không được bỏ trống !',
             'price.required' => 'Không được bỏ trống !',
             'code.required' => 'Không được bỏ trống !',
             'name.required' => 'Không được bỏ trống !',
